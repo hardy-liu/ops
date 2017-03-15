@@ -1,0 +1,31 @@
+#!/bin/bash
+# Author: liudian
+# Date: 20161103
+# Function: merge之后自动gulp
+# 移动此脚本到.git/hooks目录，重命名为post-merge，并加上执行权限
+
+logFile='/data/log/shell/ddos_master-post-merge.log'
+filePath=$(cd $(dirname $0);pwd)
+#codeDir='/data/www/ddos_master/public'
+codeDir="${filePath%/.*}/public"
+gulpDir=('html_back_v2' 'html_www_v2.1' 'html_agent_v2.5')
+gulp='/usr/bin/gulp'
+
+function do_gulp {
+	cd ${codeDir}/$1
+	if $gulp &> /dev/null; then
+		echo -e "$(date "+%F %T") gulp $1 done." | tee -a $logFile
+	else 
+		echo -e "$(date "+%F %T") [ERROR] gulp $1 failed." | tee -a $logFile	
+	fi
+}
+
+[[ ! -d $(dirname $logFile) ]] && mkdir -p $(dirname $logFile)
+
+for i in ${gulpDir[*]}; do
+	do_gulp $i &
+done
+wait
+
+#重启队列
+supervisorctl status | grep 'queueListen_new' | cut -d' ' -f1 | xargs -i supervisorctl restart {} | tee -a $logFile

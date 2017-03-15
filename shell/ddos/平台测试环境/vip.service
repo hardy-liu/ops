@@ -1,0 +1,13 @@
+[Unit]
+Description=Virtual IP Service
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/data/shell/xm_test_cdn_front_vip.sh add
+ExecStop=/data/shell/xm_test_cdn_front_vip.sh del
+TimeoutStopSec=5
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
