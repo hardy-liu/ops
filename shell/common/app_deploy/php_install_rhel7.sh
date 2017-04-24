@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Author: Hardy
 # Date: 2016-05-24
-# Function: install php-5.6.21 from source
+# Function: install php-5.6.30 from source
 # Prerequisite: mysql
 
 
 packageDir='/data/packages'						#tar包存放目录
-phpVersion='php-5.6.21'							#php版本号
+phpVersion='php-5.6.30'							#php版本号
 phpPackage="${packageDir}/${phpVersion}.tar.gz"	#php软件包名称
 phpPrefix='/opt'								#php安装目录
 phpConfDir="${phpPrefix}/etc/php"				#php配置文件目录
@@ -38,7 +38,7 @@ function check_environment {
 	[[ -d ${packageDir}/${phpVersion} ]] && rm -rf ${packageDir}/${phpVersion}
 
 	cd $packageDir
-	[[ ! -f $phpPackage ]] && curl -O http://www.hardyliu.me/packages/tar/php${phpPackage}
+	[[ ! -f $phpPackage ]] && curl -O http://www.hardyliu.me/packages/tar/php/${phpVersion}.tar.gz
 	tar zxf $phpPackage || exit 2
 
 }
