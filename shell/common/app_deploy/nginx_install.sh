@@ -4,7 +4,7 @@
 # Function: build nginx from source
 
 packageDir='/data/packages/nginx'						#软件tar包存放目录
-nginxVersion='nginx-1.10.2'								#nginx版本号
+nginxVersion='nginx-1.10.3'								#nginx版本号
 installPrefix='/opt'									#软件安装目录
 luajitDir="${installPrefix}/luajit"						#luajit安装目录
 pidLockDir="${installPrefix}/run"						#pid和lock保存的目录
@@ -36,14 +36,14 @@ function download_packages {
 	cd $packageDir
 	curl -O http://www.hardyliu.me/packages/tar/nginx/${nginxVersion}.tar.gz &
 	curl -O http://www.hardyliu.me/packages/tar/nginx/LuaJIT-2.0.4.tar.gz &
-	curl -O http://www.hardyliu.me/packages/tar/nginx/echo-nginx-module-0.58.tar.gz &
-	curl -O http://www.hardyliu.me/packages/tar/nginx/lua-nginx-module-0.10.7.tar.gz &
-	curl -O http://www.hardyliu.me/packages/tar/nginx/lua-redis-parser-0.12.tar.gz &
+	curl -O http://www.hardyliu.me/packages/tar/nginx/echo-nginx-module-0.60.tar.gz &
+	curl -O http://www.hardyliu.me/packages/tar/nginx/lua-nginx-module-0.10.8.tar.gz &
+	curl -O http://www.hardyliu.me/packages/tar/nginx/lua-redis-parser-0.13.tar.gz &
 	curl -O http://www.hardyliu.me/packages/tar/nginx/redis-lua-2.0.4.tar.gz &
-	curl -O http://www.hardyliu.me/packages/tar/nginx/nginx-module-vts-0.1.11.tar.gz &
+	curl -O http://www.hardyliu.me/packages/tar/nginx/nginx-module-vts-0.1.14.tar.gz &
 	curl -O http://www.hardyliu.me/packages/tar/nginx/ngx_cache_purge-2.3.tar.gz &
 	curl -O http://www.hardyliu.me/packages/tar/nginx/rds-json-nginx-module-0.14.tar.gz &
-	curl -O http://www.hardyliu.me/packages/tar/nginx/redis2-nginx-module-0.12.tar.gz &
+	curl -O http://www.hardyliu.me/packages/tar/nginx/redis2-nginx-module-0.14.tar.gz &
 	curl -O http://www.hardyliu.me/packages/tar/nginx/ngx_devel_kit-0.3.0.tar.gz &
 	curl -O http://www.hardyliu.me/packages/tar/nginx/set-misc-nginx-module-0.31.tar.gz &
 	wait
@@ -82,7 +82,7 @@ function install_LuaJIT {
 
 #安装redis-lua
 function install_redis_lua {
-	cd ${packageDir}/lua-redis-parser-0.12
+	cd ${packageDir}/lua-redis-parser-0.13
 	export LUA_INCLUDE_DIR=${luajitDir}/include/luajit-2.0
 	gmake CC=gcc || exit 5
 	gmake install CC=gcc || exit 6
@@ -122,11 +122,11 @@ function install_nginx {
 		--with-pcre \
 		--with-pcre-jit \
 		--with-ld-opt="-Wl,-rpath,${luajitDir}/lib" \
-		--add-module=../lua-nginx-module-0.10.7 \
-		--add-module=../nginx-module-vts-0.1.11 \
-		--add-module=../redis2-nginx-module-0.12 \
+		--add-module=../lua-nginx-module-0.10.8 \
+		--add-module=../nginx-module-vts-0.1.14 \
+		--add-module=../redis2-nginx-module-0.14 \
 		--add-module=../rds-json-nginx-module-0.14 \
-		--add-module=../echo-nginx-module-0.58 \
+		--add-module=../echo-nginx-module-0.60 \
 		--add-module=../ngx_devel_kit-0.3.0 \
 		--add-module=../set-misc-nginx-module-0.31 \
 		--add-module=../ngx_cache_purge-2.3
