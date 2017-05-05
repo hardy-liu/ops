@@ -33,7 +33,7 @@ function install_dev_packages() {
 }
 
 function install_toolkit() {
-    local commonPackages=(screen net-tools sysstat vim-enhanced git telnet bind-utils supervisor psmisc lrzsz crudini mailx mlocate expect dstat nload nethogs nfs-utils chrony bash-completion)
+    local commonPackages=(screen net-tools sysstat vim-enhanced git telnet bind-utils supervisor psmisc lrzsz crudini mailx mlocate expect dstat nload nethogs nfs-utils chrony bash-completion ipset)
     install_packages "${commonPackages[*]}"
 }
 
