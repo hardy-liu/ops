@@ -6,11 +6,14 @@
 logFile='/data/log/db_backup.log'	#此脚本的输出日志
 dbUser='root'						#备份数据库时mysqldump命令使用的账号
 dbPass='newpasswd'					#备份数据库时mysqldump命令使用的密码
-dbName=(bugfree)					#需要备份的数据库，数组形式
+dbName=($*)							#需要备份的数据库，数组形式
 bkDir='/data/backup/mysql/'			#备份文件的存放目录
 bkSuffix="_$(date +%F).sql.gz"		#备份文件的后缀
-bkKeepTime=15						#备份文件的最长保存时间，以天为单位
+bkExpiration=30						#备份文件的最长保存时间，以天为单位
 dbBinLog="$(mysql -u${dbUser} -p${dbPass} -e "show master status" | tail -1 | awk '{print $1}')"	#数据库当前的binlog
+
+[[ ! -d $(dirname $logFile) ]] && mkdir $(dirname $logFile)
+[[ ! -d $bkDir ]] && mkdir $bkDir
 
 #备份数据库函数，接受数据库名作为参数
 function db_backup() {
