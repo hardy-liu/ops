@@ -12,9 +12,6 @@ bkSuffix="_$(date +%F).sql.gz"		#备份文件的后缀
 bkExpiration=30						#备份文件的最长保存时间，以天为单位
 dbBinLog="$(mysql -u${dbUser} -p${dbPass} -e "show master status" | tail -1 | awk '{print $1}')"	#数据库当前的binlog
 
-[[ ! -d $(dirname $logFile) ]] && mkdir $(dirname $logFile)
-[[ ! -d $bkDir ]] && mkdir $bkDir
-
 #备份数据库函数，接受数据库名作为参数
 function db_backup() {
 	mysqldump -u${dbUser} -p${dbPass} --master-data=2 --databases $1 | \
@@ -33,16 +30,17 @@ function db_flushlog() {
 
 #清理过期的备份文件函数
 function purge_backup() {
-#	cd $bkDir
-#	find ./ -mtime $bkKeepTime | xargs rm -rf &> /dev/null
-	for i in $(find $bkDir -mtime $bkKeepTime); do
+	local i
+	for i in $(find $bkDir -mtime $bkExpiration); do
 		rm -rf $i && \
 		echo "$(date "+%F %T") delete outdated backup file $i done." >> $logFile
 	done
 }
 
-#备份数据库
+[[ ! -d $(dirname $logFile) ]] && mkdir $(dirname $logFile)
 [[ ! -d $bkDir ]] && mkdir -p $bkDir
+
+#备份数据库
 for i in ${dbName[*]}; do
 	db_backup $i
 done
