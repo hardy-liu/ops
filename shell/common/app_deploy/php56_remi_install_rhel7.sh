@@ -13,20 +13,25 @@ php56SessionDir='/data/php_session/php56'			#php56的session文件存放目录
 php56LogDir='/data/log/php-fpm'						#fpm日志目录
 php56Packages=(php56-php php56-php-gd php56-php-xmlrpc php56-php-pecl-redis php56-php-pdo php56-php-mbstring php56-php-mysql php56-php-fpm php56-php-bcmath php56-php-mcrypt)
 
+function install_epel() {
+	yum -y install http://mirrors.yun-idc.com/epel/epel-release-latest-7.noarch.rpm
+}
+
 #检查remi源是否安装
-function check_repo {
+function check_repo() {
 	[[ $ifRemi -eq 0 ]] && rpm -ivh http://www.hardyliu.me/packages/rpm/php/${remiName}
 }
 
 #安装php56
-function install_php56 {
+function install_php56() {
 	for i in ${php56Packages[*]}; do
 		yum install -y $i
+		[[ ! $? -eq 0 ]] && exit 1
 	done
 }
 
 #更改php56的php.ini配置
-function modify_php56_ini {
+function modify_php56_ini() {
 	[[ ! -f ${php56ConfDir}/php.ini.default ]] && \
 	cp ${php56ConfDir}/{php.ini,php.ini.default}
 
@@ -44,7 +49,7 @@ function modify_php56_ini {
 }
 
 #更改php56的php-fpm的配置
-function modify_php_fpm {
+function modify_php_fpm() {
 	[[ ! -f ${php56ConfDir}/php-fpm.d/www.conf.default ]] && \
 	cp ${php56ConfDir}/php-fpm.d/{www.conf,www.conf.default}
 
@@ -78,7 +83,7 @@ function modify_php_fpm {
 }
 
 #修改默认的php命令执行程序为php56
-function php54_to_php56 {
+function php54_to_php56() {
 	if [[ -f /usr/bin/php ]]; then
 		if [[ ! -h /usr/bin/php ]]; then 
 	#如果/usr/bin/php文件存在且不为符号链接时，说明/usr/bin/php文件为php54的bin文件
@@ -92,11 +97,12 @@ function php54_to_php56 {
 }
 
 #启动php-fpm进程
-function start_php_fpm {
+function start_php_fpm() {
 	systemctl start php56-php-fpm.service
 	systemctl enable php56-php-fpm.service
 }
 
+install_epel
 check_repo
 install_php56
 modify_php56_ini
