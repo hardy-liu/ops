@@ -9,7 +9,7 @@ certDir='/etc/ocserv/ssl'
 confFile='/etc/ocserv/ocserv.conf'
 
 function gather_variables {
-	read -p "vpn network is: " network				#分配给vpn客户端的ip地址池 
+	read -p "vpn network is: " network				#分配给vpn客户端的ip地址池 192.168.11.0/24
 	read -p "network interface is: " netInterface	#公网网卡接口
 	read -p "vpn username is: " vpnUser				#vpn用户的用户名和密码
 	read -p "vpn password is: " vpnPass
