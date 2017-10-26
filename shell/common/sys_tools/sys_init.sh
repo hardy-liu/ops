@@ -100,4 +100,4 @@ disable_selinux
 add_history_timestamp
 change_local
 add_ntp
-#change_nofile
+change_nofile
