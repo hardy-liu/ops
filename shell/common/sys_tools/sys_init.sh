@@ -3,6 +3,9 @@
 # Date: 20160222
 # Function: 系统初始化，做一些常用配置, 安装常用软件
 
+devPackages=(pcre-devel openssl-devel)
+commonPackages=(screen net-tools sysstat vim-enhanced git telnet bind-utils supervisor psmisc lrzsz crudini mailx mlocate expect dstat nload nethogs nfs-utils chrony bash-completion ipset whois) 
+
 function install_packages() {
     local packages=($1)
     local i=''
@@ -27,13 +30,11 @@ function check_epel() {
 }
 
 function install_dev_packages() {
-    local devPackages=(pcre-devel openssl-devel)
     install_packages "${devPackages[*]}"
     yum groupinstall -y --skip-broken "Compatibility Libraries" "Development Tools"
 }
 
 function install_toolkit() {
-    local commonPackages=(screen net-tools sysstat vim-enhanced git telnet bind-utils supervisor psmisc lrzsz crudini mailx mlocate expect dstat nload nethogs nfs-utils chrony bash-completion ipset)
     install_packages "${commonPackages[*]}"
 }
 
