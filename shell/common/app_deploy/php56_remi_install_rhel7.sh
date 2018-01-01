@@ -11,7 +11,7 @@ php56ConfDir='/opt/remi/php56/root/etc'				#php56配置文件目录
 php56RootDir='/opt/remi/php56/root'				
 php56SessionDir='/data/php_session/php56'			#php56的session文件存放目录
 php56LogDir='/data/log/php-fpm'						#fpm日志目录
-php56Packages=(php56-php php56-php-gd php56-php-xmlrpc php56-php-pecl-redis php56-php-pdo php56-php-mbstring php56-php-mysql php56-php-fpm php56-php-bcmath php56-php-mcrypt)
+php56Packages=(php56-php php56-php-gd php56-php-xmlrpc php56-php-pecl-redis php56-php-pdo php56-php-mbstring php56-php-mysql php56-php-fpm php56-php-bcmath php56-php-mcrypt php56-php-soap)
 
 function install_epel() {
 	yum -y install http://mirrors.yun-idc.com/epel/epel-release-latest-7.noarch.rpm
