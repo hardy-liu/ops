@@ -4,7 +4,7 @@
 # Function: 自动安装shadowsocks
 
 repoFile='/etc/yum.repos.d/shadowsocks.repo'			#shadowsocks的yum配置文件
-shadowPackages=('shadowsocks-qt5' 'shadowsocks-libev')	#软件包
+shadowPackages=('libsodium13' 'shadowsocks-qt5' 'shadowsocks-libev')	#软件包
 shadowConf='/etc/shadowsocks-libev/config.json'			#配置文件
 ipAddr='0.0.0.0' 										#监听ip地址
 pass='sh1nzII59D'										#shadowsocks连接的密码
