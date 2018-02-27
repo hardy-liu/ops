@@ -25,7 +25,7 @@ function change_hostname() {
 
 function check_epel() {
     if ! yum repolist | grep "epel" &> /dev/null; then
-        yum -y install http://mirrors.yun-idc.com/epel/epel-release-latest-7.noarch.rpm
+        yum install -y http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     fi
 }
 

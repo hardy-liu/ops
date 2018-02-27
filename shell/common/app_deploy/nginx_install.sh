@@ -54,7 +54,7 @@ function download_packages {
 #检查epel源是否安装
 function check_epel {
 	if [[ $(yum repolist | grep epel |wc -l) -eq 0 ]]; then
-		yum -y install http://mirrors.yun-idc.com/epel/epel-release-latest-7.noarch.rpm
+		yum install -y http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 	fi
 }
 

@@ -14,7 +14,7 @@ php56LogDir='/data/log/php-fpm'						#fpm日志目录
 php56Packages=(php56-php php56-php-gd php56-php-xmlrpc php56-php-pecl-redis php56-php-pdo php56-php-mbstring php56-php-mysql php56-php-fpm php56-php-bcmath php56-php-mcrypt php56-php-soap)
 
 function install_epel() {
-	yum install -y install http://mirrors.yun-idc.com/epel/epel-release-latest-7.noarch.rpm
+	yum install -y http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 }
 
 #检查remi源是否安装

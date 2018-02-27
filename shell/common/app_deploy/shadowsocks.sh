@@ -13,7 +13,7 @@ listenPort='8388'										#监听的端口
 #检查并安装epel源
 function check_epel {
 	ifEpel=$( yum repolist | grep epel |wc -l)
-	[[ $ifEpel -eq 0 ]] && yum -y install http://mirrors.yun-idc.com/epel/epel-release-latest-7.noarch.rpm
+	[[ $ifEpel -eq 0 ]] && yum install -y http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 }
 
 #添加shadowsocks的repo配置文件

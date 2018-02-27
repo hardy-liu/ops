@@ -28,7 +28,7 @@ function check_environment {
 
 	#安装epel源
 	ifEpel=$( yum repolist | grep epel |wc -l)
-	[[ $ifEpel -eq 0 ]] && yum -y install http://mirrors.yun-idc.com/epel/epel-release-latest-7.noarch.rpm
+	[[ $ifEpel -eq 0 ]] && yum install -y http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 	#创建php软件安装目录
 	[[ ! -d $phpConfDir ]] && mkdir -p $phpConfDir
