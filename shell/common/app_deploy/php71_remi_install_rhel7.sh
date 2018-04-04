@@ -8,7 +8,7 @@ fpmPort='9000'										#php-fpm的监听端口
 php71ConfDir='/etc'									#php71配置文件目录
 php71SessionDir='/data/php_session/php71'			#php71的session文件存放目录
 php71LogDir='/data/log/php-fpm'						#fpm日志目录
-php71Packages=(php php-gd php-xmlrpc php-pecl-redis php-pdo php-mbstring php-mysql php-fpm php-bcmath php-soap)
+php71Packages=(php php-gd php-xmlrpc php-pecl-redis php-pdo php-mbstring php-mysql php-fpm php-bcmath php-soap php-zip)
 
 function install_remi() {
 	rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
