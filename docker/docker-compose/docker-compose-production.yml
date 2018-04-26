@@ -1,5 +1,22 @@
 version: "3"
 services:
+  mysql:
+    image: "mymysql:5.7.22"
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    volumes:
+      - "/data/docker/mysql/log:/var/log/mysql"
+      - "/data/docker/mysql/data:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+    extra_hosts:
+      - "hypervisor:192.168.1.180"
+    networks:
+      - webnet
   redis:
     image: "myredis:4.0.9"
     deploy:
@@ -11,7 +28,7 @@ services:
     volumes:
       - "/data/docker/redis/data:/data"
     ports:
-      - "16379:6379"
+      - "6379:6379"
     extra_hosts:
       - "hypervisor:192.168.1.180"
     networks:
@@ -29,7 +46,7 @@ services:
       - "/data/www:/data/www"
       - "/data/docker/php72:/data/php"
     ports:
-      - "9090:9000"
+      - "9000:9000"
     extra_hosts:
       - "hypervisor:192.168.1.180"
     networks:
@@ -49,7 +66,7 @@ services:
       - "/data/docker/nginx/ssl:/etc/nginx/ssl"
       - "/data/www:/data/www"
     ports:
-      - "8080:80"
+      - "80:80"
     environment:
       - DOLLAR=$$
       - FASTCGI_HOST=192.168.1.180

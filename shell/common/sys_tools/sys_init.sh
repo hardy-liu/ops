@@ -20,6 +20,7 @@ function change_hostname() {
     local hostname=''
     read -p "hostname: " hostname
     echo "$hostname" > /etc/hostname
+    echo "127.0.0.1 $hostname" >> /etc/hosts
     hostname $hostname
 }
 
@@ -30,8 +31,8 @@ function check_epel() {
 }
 
 function install_dev_packages() {
-    install_packages "${devPackages[*]}"
-    yum groupinstall -y --skip-broken "Compatibility Libraries" "Development Tools"
+    install_packages "${devPackages[*]}" \
+    && yum groupinstall -y --skip-broken "Compatibility Libraries" "Development Tools"
 }
 
 function install_toolkit() {
@@ -53,6 +54,8 @@ function change_default_firewall() {
     systemctl disable firewalld
     systemctl start iptables
     systemctl enable iptables
+    iptables -I INPUT -p tcp -m multiport --dport=80,443 -m comment --comment "Web Rules" -j ACCEPT
+    iptables-save > /etc/sysconfig/iptables
 }
 
 function disable_selinux() {
@@ -71,7 +74,7 @@ function add_history_timestamp() {
     fi
 }
 
-function change_local() {
+function change_locale() {
     localectl set-locale LANG="en_US.UTF-8"
 }
 
@@ -81,24 +84,30 @@ function add_ntp() {
     systemctl start chronyd
 }
 
-function change_nofile() {
-    read -p "Optimize Ulimit Nofile Setting?[y|n]: " ifChangeNofile
-    [[ $ifChangeNofile != 'y' ]] && return
-    local ulimitNofileConf='/etc/security/limits.d/10-nofile.conf'
-    if [[ ! -f $ulimitNofileConf ]]; then
-        echo '* - nofile 100000' > $ulimitNofileConf
-        echo 'fs.file-max = 2000000' >> /etc/sysctl.d/99-sysctl.conf
-    fi
+function do_web_optimize() {
+    curl -s https://raw.githubusercontent.com/hardy-liu/ops/master/shell/common/sys_tools/web_optimization.sh | bash - >> /dev/null \
+    && echo "optimize ulimit and kernel success..."
 }
 
-change_hostname
-check_epel
-install_dev_packages
-install_toolkit
-configure_vim
-change_default_firewall
-disable_selinux
-add_history_timestamp
-change_local
-add_ntp
-change_nofile
+echo "changing hostname..." \
+&& change_hostname \
+&& echo "checking epel..." \
+&& check_epel >> /dev/null \
+&& echo "installing dev packages..." \
+&& install_dev_packages >> /dev/null \
+&& echo "installing tollkit..." \
+&& install_toolkit >> /dev/null \
+&& echo "configuring vim..." \
+&& configure_vim >> /dev/null \
+&& echo "changing default firewall..." \
+&& change_default_firewall >> /dev/null \
+&& echo "disabling selinue..." \
+&& disable_selinux >> /dev/null \
+&& echo "adding history timestamp..." \
+&& add_history_timestamp >> /dev/null \
+&& echo "changing locale..." \
+&& change_locale >> /dev/null \
+&& echo "adding ntp..." \
+&& add_ntp >> /dev/null \
+&& echo "doing web optimization..." \
+&& do_web_optimize
