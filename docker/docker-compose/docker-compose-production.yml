@@ -1,0 +1,63 @@
+version: "3"
+services:
+  redis:
+    image: "myredis:4.0.9"
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    volumes:
+      - "/data/docker/redis/data:/data"
+    ports:
+      - "16379:6379"
+    extra_hosts:
+      - "hypervisor:192.168.1.180"
+    networks:
+      - webnet
+    command: ["redis-server", "--appendonly", "yes" ]
+  php:
+    image: "myphp-fpm:7.2.4"
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    volumes:
+      - "/data/www:/data/www"
+      - "/data/docker/php72:/data/php"
+    ports:
+      - "9090:9000"
+    extra_hosts:
+      - "hypervisor:192.168.1.180"
+    networks:
+      - webnet
+  nginx:
+    image: "mynginx:1.12.2"
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    volumes:
+      - "/data/docker/nginx/log:/var/log/nginx"
+      - "/data/docker/nginx/conf/conf.d:/etc/nginx/conf.d"
+      - "/data/docker/nginx/conf/extra:/etc/nginx/extra"
+      - "/data/docker/nginx/ssl:/etc/nginx/ssl"
+      - "/data/www:/data/www"
+    ports:
+      - "8080:80"
+    environment:
+      - DOLLAR=$$
+      - FASTCGI_HOST=192.168.1.180
+      - FASTCGI_PORT=9090
+    extra_hosts:
+      - "hypervisor:192.168.1.180"
+    networks:
+      - webnet
+    command: /bin/bash -c "envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
+networks:
+  webnet:
