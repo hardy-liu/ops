@@ -1,7 +1,7 @@
 version: "3"
 services:
   mysql:
-    image: "mymysql:5.7.22"
+    image: "{mysqlImage}"
     deploy:
       mode: global
       restart_policy:
@@ -14,11 +14,11 @@ services:
     ports:
       - "3306:3306"
     extra_hosts:
-      - "hypervisor:192.168.1.180"
+      - "hypervisor:{hypervisorIp}"
     networks:
       - webnet
   redis:
-    image: "myredis:4.0.9"
+    image: "{redisImage}"
     deploy:
       mode: global
       restart_policy:
@@ -30,12 +30,12 @@ services:
     ports:
       - "6379:6379"
     extra_hosts:
-      - "hypervisor:192.168.1.180"
+      - "hypervisor:{hypervisorIp}"
     networks:
       - webnet
     command: ["redis-server", "--appendonly", "yes" ]
   php:
-    image: "myphp-fpm:7.2.4"
+    image: "{phpImage}"
     deploy:
       mode: global
       restart_policy:
@@ -48,11 +48,11 @@ services:
     ports:
       - "9000:9000"
     extra_hosts:
-      - "hypervisor:192.168.1.180"
+      - "hypervisor:{hypervisorIp}"
     networks:
       - webnet
   nginx:
-    image: "mynginx:1.12.2"
+    image: "{nginxImage}"
     deploy:
       mode: global
       restart_policy:
@@ -69,10 +69,10 @@ services:
       - "80:80"
     environment:
       - DOLLAR=$$
-      - FASTCGI_HOST=192.168.1.180
+      - FASTCGI_HOST={hypervisorIp}
       - FASTCGI_PORT=9090
     extra_hosts:
-      - "hypervisor:192.168.1.180"
+      - "hypervisor:{hypervisorIp}"
     networks:
       - webnet
     command: /bin/bash -c "envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
