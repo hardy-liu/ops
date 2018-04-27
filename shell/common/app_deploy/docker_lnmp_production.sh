@@ -42,7 +42,7 @@ EOF
 #准备工作，创建目录等
 function do_preparation() {
 	if [[ -d $dockerDataDir ]]; then
-		echo 'docker数据映射目录已存在，退出...'; exit 1 
+		echo '![ERROR] docker数据映射目录已存在，退出...' >> /dev/stderr &&  exit 1 
 	else 
 		mkdir -p ${dockerDataDir}/{mysql,nginx,php72,redis} \
 		&& mkdir -p ${dockerDataDir}/mysql/{data,log} \
@@ -63,14 +63,13 @@ EOF
 
 #下载docker镜像到本地
 function fetch_docker_image() {
-	echo 'pulling docker image...'
-	docker pull ${dockerRegistry}/${mysqlImage} &
-	docker pull ${dockerRegistry}/${phpImage} &
-	docker pull ${dockerRegistry}/${nginxImage} &
-	docker pull ${dockerRegistry}/${redisImage} &
-	wait
-
-	docker tag ${dockerRegistry}/${mysqlImage} $mysqlImage \
+	systemctl start docker \
+	&& systemctl enable docker \
+	&& docker pull ${dockerRegistry}/${mysqlImage} \
+	&& docker pull ${dockerRegistry}/${phpImage} \
+	&& docker pull ${dockerRegistry}/${nginxImage} \
+	&& docker pull ${dockerRegistry}/${redisImage} \
+	&& docker tag ${dockerRegistry}/${mysqlImage} $mysqlImage \
 	&& docker tag ${dockerRegistry}/${phpImage} $phpImage \
 	&& docker tag ${dockerRegistry}/${nginxImage} $nginxImage \
 	&& docker tag ${dockerRegistry}/${redisImage} $redisImage
@@ -88,19 +87,18 @@ function generate_compose_yaml() {
 
 #启动环境
 function strart_app() {
-	systemctl enable docker \
-	&& systemctl start docker \
-	&& docker swarm init --advertise-addr=$hypervisorIp \
-	&& docker stack deploy -c $composeTemplate web
+	#docker swarm init --advertise-addr=$hypervisorIp \
+	#&& docker stack deploy -c $composeTemplate web
+    docker-compose -f $composeTemplate up -d
 }
 
-&& read_host_ip \
+read_host_ip \
 && echo 'installing docker...' \
 && install_docker >> /dev/null \
 && echo 'doing prepation...' \
 && do_preparation >> /dev/null \
 && echo 'fetching docker images...' \
-&& fetch_docker_image >> /dev/null \
+&& fetch_docker_image \
 && echo 'generating compose yaml...' \
 && generate_compose_yaml >> /dev/null \
 && echo 'starring app...' \

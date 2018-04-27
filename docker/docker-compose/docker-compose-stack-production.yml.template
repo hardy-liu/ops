@@ -2,7 +2,12 @@ version: "3"
 services:
   mysql:
     image: "{mysqlImage}"
-    restart: always
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
     volumes:
       - "/data/docker/mysql/log:/var/log/mysql"
       - "/data/docker/mysql/data:/var/lib/mysql"
@@ -13,12 +18,15 @@ services:
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:
-      webnet:
-        aliases:
-          - "my-docker-mysql"
+      - webnet
   redis:
     image: "{redisImage}"
-    restart: always
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
     volumes:
       - "/data/docker/redis/data:/data"
     ports:
@@ -26,30 +34,36 @@ services:
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:
-      webnet:
-        aliases:
-          - "my-docker-redis"
+      - webnet
     command: ["redis-server", "--appendonly", "yes" ]
   php:
     image: "{phpImage}"
-    restart: always
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
     volumes:
       - "/data/www:/data/www"
       - "/data/docker/php72:/data/php"
     ports:
       - "9000:9000"
     depends_on:
-      - mysql
-      - redis
+      - "mysql"
+      - "redis"
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:
-      webnet:
-        aliases:
-          - "my-docker-php-fpm"
+      - webnet
   nginx:
     image: "{nginxImage}"
-    restart: always
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
     volumes:
       - "/data/docker/nginx/log:/var/log/nginx"
       - "/data/docker/nginx/conf/conf.d:/etc/nginx/conf.d"
@@ -59,17 +73,15 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - php
+      - "php"
     environment:
       - DOLLAR=$$
-      - FASTCGI_HOST=my-docker-php-fpm
+      - FASTCGI_HOST={hypervisorIp}
       - FASTCGI_PORT=9000
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:
-      webnet:
-        aliases:
-          - "my-docker-nginx"
+      - webnet
     command: /bin/bash -c "envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
 networks:
   webnet:
