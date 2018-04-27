@@ -16,6 +16,7 @@ services:
       webnet:
         aliases:
           - "my-docker-mysql"
+    command: /bin/bash -c "usermod -u {dockerMysqlUid} mysql && groupmod -g {dockerMysqlUid} mysql && mysqld"
   redis:
     image: "{redisImage}"
     restart: always
@@ -29,6 +30,7 @@ services:
       webnet:
         aliases:
           - "my-docker-redis"
+    command: /bin/bash -c "usermod -u {dockerRedisUid} redis && groupmod -g {dockerRedisUid} redis && redis-server --appendonly yes"
     command: ["redis-server", "--appendonly", "yes" ]
   php:
     image: "{phpImage}"
@@ -47,6 +49,7 @@ services:
       webnet:
         aliases:
           - "my-docker-php-fpm"
+    command: /bin/bash -c "usermod -u {dockerWwwUid} www-data && groupmod -g {dockerWwwUid} www-data && php-fpm"
   nginx:
     image: "{nginxImage}"
     restart: always
@@ -70,6 +73,6 @@ services:
       webnet:
         aliases:
           - "my-docker-nginx"
-    command: /bin/bash -c "envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
+    command: /bin/bash -c "usermod -u {dockerWwwUid} nginx && groupmod -g {dockerWwwUid} nginx && envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
 networks:
   webnet:

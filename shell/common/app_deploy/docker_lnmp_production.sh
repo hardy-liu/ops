@@ -39,6 +39,17 @@ function install_docker() {
 EOF
 }
 
+function install_docker_composer() {
+	local dockerComposeLocation='/usr/local/bin/docker-compose'
+	if [[ ! -f $dockerComposeLocation ]]; then
+		curl -s -L https://github.com/docker/compose/releases/download/1.21.0/docker-compose-$(uname -s)-$(uname -m) -o $dockerComposeLocation
+		chmod +x $dockerComposeLocation
+		curl -s -L https://raw.githubusercontent.com/docker/compose/1.21.0/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
+	else
+		echo 'docker-compose already exists. skip this step...'
+	fi
+}
+
 #准备工作，创建目录等
 function do_preparation() {
 	if [[ -d $dockerDataDir ]]; then
@@ -95,6 +106,8 @@ function strart_app() {
 read_host_ip \
 && echo 'installing docker...' \
 && install_docker >> /dev/null \
+&& echo 'installing docker-compose...' \
+&& install_docker_composer \
 && echo 'doing prepation...' \
 && do_preparation >> /dev/null \
 && echo 'fetching docker images...' \
