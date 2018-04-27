@@ -31,13 +31,12 @@ services:
         aliases:
           - "my-docker-redis"
     command: /bin/bash -c "usermod -u {dockerRedisUid} redis && groupmod -g {dockerRedisUid} redis && redis-server --appendonly yes"
-    command: ["redis-server", "--appendonly", "yes" ]
   php:
     image: "{phpImage}"
     restart: always
     volumes:
       - "/data/www:/data/www"
-      - "/data/docker/php72:/data/php"
+      - "/data/docker/php:/data/php"
     ports:
       - "9000:9000"
     depends_on:

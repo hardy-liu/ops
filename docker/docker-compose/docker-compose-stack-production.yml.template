@@ -46,7 +46,7 @@ services:
         max_attempts: 3
     volumes:
       - "/data/www:/data/www"
-      - "/data/docker/php72:/data/php"
+      - "/data/docker/php:/data/php"
     ports:
       - "9000:9000"
     depends_on:

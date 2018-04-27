@@ -11,6 +11,9 @@ redisImage='myredis:4.0.9'
 dockerDataDir='/data/docker'
 hypervisorIp=''		#docker宿主机ip, 即本机ip(非lo)
 composeTemplate="${dockerDataDir}/docker-compose.yml"	#docker-compose
+dockerMysqlUid=''	#用户id
+dockerRedisUid=''
+dockerWwwUid=''
 
 #读取本机ip（手动输入）
 function read_host_ip() {
@@ -55,11 +58,11 @@ function do_preparation() {
 	if [[ -d $dockerDataDir ]]; then
 		echo '![ERROR] docker数据映射目录已存在，退出...' >> /dev/stderr &&  exit 1 
 	else 
-		mkdir -p ${dockerDataDir}/{mysql,nginx,php72,redis} \
+		mkdir -p ${dockerDataDir}/{mysql,nginx,php,redis} \
 		&& mkdir -p ${dockerDataDir}/mysql/{data,log} \
 		&& mkdir -p ${dockerDataDir}/nginx/{conf,log,ssl} \
 		&& mkdir -p ${dockerDataDir}/nginx/conf/{conf.d,extra} \
-		&& mkdir -p ${dockerDataDir}/php72/{log,session} \
+		&& mkdir -p ${dockerDataDir}/php/{log,session} \
 		&& mkdir -p ${dockerDataDir}/redis/data \
 		#添加php-fpm模版文件
 		cat > ${dockerDataDir}/nginx/conf/extra/php-fpm.template << EOF
@@ -88,12 +91,24 @@ function fetch_docker_image() {
 
 #通过docker-compose模版生成可执行yaml文件
 function generate_compose_yaml() {
+	#创建用户, 获取其id, 修改文件夹权限
+	useradd docker-www && chown -R docker-www:docker-www {/data/www,/data/docker/nginx,/data/docker/php}
+	dockerWwwUid=$(id -u docker-www)
+	useradd docker-mysql && chown -R docker-mysql:docker-mysql /data/docker/mysql
+	dockerMysqlUid=$(id -u docker-mysql)
+	useradd docker-redis && chown -R docker-redis:docker-redis /data/docker/redis
+	dockerRedisUid=$(id -u docker-redis)
+
+	#下载配置文件模版
 	curl -s -o $composeTemplate https://raw.githubusercontent.com/hardy-liu/ops/master/docker/docker-compose/docker-compose-production.yml.template
-	sed -i "s/{mysqlImage}/${mysqlImage}/" $composeTemplate
-	sed -i "s/{phpImage}/${phpImage}/" $composeTemplate
-	sed -i "s/{nginxImage}/${nginxImage}/" $composeTemplate
-	sed -i "s/{redisImage}/${redisImage}/" $composeTemplate
-	sed -i "s/{hypervisorIp}/${hypervisorIp}/" $composeTemplate
+	sed -i "s/{mysqlImage}/${mysqlImage}/g" $composeTemplate
+	sed -i "s/{phpImage}/${phpImage}/g" $composeTemplate
+	sed -i "s/{nginxImage}/${nginxImage}/g" $composeTemplate
+	sed -i "s/{redisImage}/${redisImage}/g" $composeTemplate
+	sed -i "s/{hypervisorIp}/${hypervisorIp}/g" $composeTemplate
+	sed -i "s/{dockerMysqlUid}/${dockerMysqlUid}/g" $composeTemplate
+	sed -i "s/{dockerRedisUid}/${dockerRedisUid}/g" $composeTemplate
+	sed -i "s/{dockerWwwUid}/${dockerWwwUid}/g" $composeTemplate
 }
 
 #启动环境
