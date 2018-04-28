@@ -114,6 +114,14 @@ function generate_compose_yaml() {
 	sed -i "s/{dockerWwwUid}/${dockerWwwUid}/g" $composeTemplate
 }
 
+#添加hosts解析
+function add_hosts_resolve() {
+    echo "172.28.0.11 my-docker-mysql" >> /etc/hosts
+    echo "172.28.0.12 my-docker-redis" >> /etc/hosts
+    echo "172.28.0.13 my-docker-php-fpm" >> /etc/hosts
+    echo "172.28.0.14 my-docker-nginx" >> /etc/hosts
+}
+
 #启动环境
 function strart_app() {
 	#docker swarm init --advertise-addr=$hypervisorIp \
@@ -132,5 +140,7 @@ read_host_ip \
 && fetch_docker_image \
 && echo 'generating compose yaml...' \
 && generate_compose_yaml >> /dev/null \
+&& echo 'adding hosts resolve...' \
+&& add_hosts_resolve >> /dev/null \
 && echo 'starring app...' \
 && strart_app

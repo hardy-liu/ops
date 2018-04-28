@@ -14,6 +14,7 @@ services:
       - "hypervisor:{hypervisorIp}"
     networks:
       webnet:
+        ipv4_address: 172.28.0.11
         aliases:
           - "my-docker-mysql"
     command: /bin/bash -c "usermod -u {dockerMysqlUid} mysql && groupmod -g {dockerMysqlUid} mysql && mysqld"
@@ -28,6 +29,7 @@ services:
       - "hypervisor:{hypervisorIp}"
     networks:
       webnet:
+        ipv4_address: 172.28.0.12
         aliases:
           - "my-docker-redis"
     command: /bin/bash -c "usermod -u {dockerRedisUid} redis && groupmod -g {dockerRedisUid} redis && redis-server --appendonly yes"
@@ -46,6 +48,7 @@ services:
       - "hypervisor:{hypervisorIp}"
     networks:
       webnet:
+        ipv4_address: 172.28.0.13
         aliases:
           - "my-docker-php-fpm"
     command: /bin/bash -c "usermod -u {dockerWwwUid} www-data && groupmod -g {dockerWwwUid} www-data && php-fpm"
@@ -70,8 +73,12 @@ services:
       - "hypervisor:{hypervisorIp}"
     networks:
       webnet:
+        ipv4_address: 172.28.0.14
         aliases:
           - "my-docker-nginx"
     command: /bin/bash -c "usermod -u {dockerWwwUid} nginx && groupmod -g {dockerWwwUid} nginx && envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
 networks:
   webnet:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
