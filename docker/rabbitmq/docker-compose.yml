@@ -1,0 +1,29 @@
+version: "3"
+services:
+  rabbitmq:
+    image: "{rabbitmqImage}"
+    restart: always
+    volumes:
+      - "/data/docker/rabbitmq/log:/var/log/rabbitmq"
+      - "/data/docker/rabbitmq/data:/var/lib/rabbitmq"
+    ports:
+      - "4369:4369"
+      - "5671:5671"
+      - "5672:5672"
+      - "25672:25672"
+      - "15671:15671"
+      - "15672:15672"
+    environment:
+      - HOSTNAME=rabbitmq
+      - RABBITMQ_HIPE_COMPILE=1
+      - RABBITMQ_DEFAULT_USER=rabbit
+      - RABBITMQ_DEFAULT_PASS=rabbit
+    extra_hosts:
+      - "hypervisor:{hypervisorIp}"
+    networks:
+      rabbitmqnet:
+        aliases:
+          - "my-rabbitmq"
+    command: /bin/bash -c "usermod -u {dockerRabbitmqUid} rabbitmq && groupmod -g {dockerRabbitmqUid} rabbitmq && rabbitmq-server"
+networks:
+  rabbitmqnet:

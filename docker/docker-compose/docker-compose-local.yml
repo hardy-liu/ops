@@ -2,7 +2,7 @@ version: "3"
 services:
   mysql:
     image: "mymysql:5.7.22"
-    restart: always
+#    restart: always
     volumes:
       - "/data/docker/mysql/log:/var/log/mysql"
       - "/usr/local/var/mysql:/var/lib/mysql"
@@ -18,7 +18,7 @@ services:
           - "my-docker-mysql"
   redis:
     image: "myredis:4.0.9"
-    restart: always
+#    restart: always
     volumes:
       - "/data/docker/redis/data:/data"
     ports:
@@ -32,7 +32,7 @@ services:
     command: ["redis-server", "--appendonly", "yes" ]
   php:
     image: "myphp-fpm:7.2.4"
-    restart: always
+#    restart: always
     volumes:
       - "/data/www:/data/www"
       - "/data/docker/php72:/data/php"
@@ -49,7 +49,7 @@ services:
           - "my-docker-php-fpm"
   nginx:
     image: "mynginx:1.12.2"
-    restart: always
+#    restart: always
     volumes:
       - "/data/docker/nginx/log:/var/log/nginx"
       - "/data/docker/nginx/conf/conf.d:/etc/nginx/conf.d"
