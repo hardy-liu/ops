@@ -1,7 +1,7 @@
 version: "3"
 services:
   rabbitmq:
-    image: "myrabbitmq"
+    image: "myrabbitmq:3.7.4"
     restart: always
     volumes:
       - "/data/docker/rabbitmq/log:/var/log/rabbitmq"
