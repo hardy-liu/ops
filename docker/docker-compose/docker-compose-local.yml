@@ -10,6 +10,7 @@ services:
       - "13306:3306"
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - TZ=Asia/Hong_Kong
     extra_hosts:
       - "hypervisor:192.168.1.180"
     networks:
@@ -23,6 +24,8 @@ services:
       - "/data/docker/redis/data:/data"
     ports:
       - "16379:6379"
+    environment:
+      - TZ=Asia/Hong_Kong
     extra_hosts:
       - "hypervisor:192.168.1.180"
     networks:
@@ -41,6 +44,8 @@ services:
     depends_on:
       - mysql
       - redis
+    environment:
+      - TZ=Asia/Hong_Kong
     extra_hosts:
       - "hypervisor:192.168.1.180"
     networks:
@@ -64,6 +69,7 @@ services:
       - DOLLAR=$$
       - FASTCGI_HOST=my-docker-php-fpm
       - FASTCGI_PORT=9000
+      - TZ=Asia/Hong_Kong
     extra_hosts:
       - "hypervisor:192.168.1.180"
     networks:

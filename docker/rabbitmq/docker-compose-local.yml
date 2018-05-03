@@ -17,6 +17,7 @@ services:
       - HOSTNAME=rabbitmq
       - RABBITMQ_DEFAULT_USER=rabbit
       - RABBITMQ_DEFAULT_PASS=rabbit
+      - TZ=Asia/Hong_Kong
     extra_hosts:
       - "hypervisor:192.168.1.180"
     networks:
