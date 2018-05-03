@@ -92,13 +92,13 @@ function fetch_docker_image() {
 #通过docker-compose模版生成可执行yaml文件
 function generate_compose_yaml() {
 	#创建用户, 获取其id, 修改文件夹权限
-	useradd docker-www 
+	useradd -s /sbin/nologin docker-www 
 	chown -R docker-www:docker-www {/data/www,/data/docker/nginx,/data/docker/php}
 	dockerWwwUid=$(id -u docker-www)
-	useradd docker-mysql 
+	useradd -s /sbin/nologin docker-mysql 
 	chown -R docker-mysql:docker-mysql /data/docker/mysql
 	dockerMysqlUid=$(id -u docker-mysql)
-	useradd docker-redis 
+	useradd -s /sbin/nologin docker-redis 
 	chown -R docker-redis:docker-redis /data/docker/redis
 	dockerRedisUid=$(id -u docker-redis)
 
