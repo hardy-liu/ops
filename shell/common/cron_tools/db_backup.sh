@@ -37,7 +37,7 @@ function purge_backup() {
 	done
 }
 
-[[ ! -d $(dirname $logFile) ]] && mkdir $(dirname $logFile)
+[[ ! -d $(dirname $logFile) ]] && mkdir -p $(dirname $logFile)
 [[ ! -d $bkDir ]] && mkdir -p $bkDir
 
 #备份数据库
