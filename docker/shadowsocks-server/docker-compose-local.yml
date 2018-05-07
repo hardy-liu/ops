@@ -1,0 +1,27 @@
+version: "3"
+services:
+  "shadowsocks-server":
+    image: "myshadowsocks-server"
+    restart: always
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    tmpfs:
+      - /run
+    ports:
+      - "15566:8388"
+    environment:
+      - HOSTNAME=shadowsocks-server
+      - TZ=Asia/Hong_Kong
+    extra_hosts:
+      - "hypervisor:192.168.1.180"
+    networks:
+      shadowsocksnet:
+        aliases:
+          - "my-shadowsocks-server"
+networks:
+  shadowsocksnet:
