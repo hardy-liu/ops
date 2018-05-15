@@ -46,3 +46,6 @@ RUN mkdir -p /data/php/log \
             sed -i 's@error_log = /proc/self/fd/2@error_log = /data/php/log/error.log@' $i; \
             sed -i 's@access.log = /proc/self/fd/2@access.log = /data/php/log/access.log@' $i; \
     done;
+
+#安装composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
