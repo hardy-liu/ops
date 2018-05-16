@@ -11,6 +11,7 @@ services:
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:
@@ -28,6 +29,7 @@ services:
       - "6379:6379"
     environment:
       - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:
@@ -49,6 +51,7 @@ services:
       - redis
     environment:
       - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:
@@ -76,6 +79,7 @@ services:
       - FASTCGI_HOST=my-docker-php-fpm
       - FASTCGI_PORT=9000
       - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:
