@@ -3,7 +3,7 @@
 # Date: 20180426
 # Function: 部署docker lnmp环境
 
-dockerRegistry='ecs-hk.hardyliu.me:5000'
+dockerRegistry='hardyliu'
 mysqlImage='mymysql:5.7.22'
 phpImage='myphp-fpm:7.2.4'
 nginxImage='mynginx:1.12.2'
