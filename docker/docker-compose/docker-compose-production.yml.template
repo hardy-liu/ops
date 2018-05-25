@@ -6,6 +6,7 @@ services:
     volumes:
       - "/data/docker/mysql/log:/var/log/mysql"
       - "/data/docker/mysql/data:/var/lib/mysql"
+      - "/data/backup/mysql:/data/backup/mysql"
     ports:
       - "3306:3306"
     environment:
