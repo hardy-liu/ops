@@ -100,10 +100,10 @@ function generate_compose_yaml() {
 
 	#下载配置文件模版
 	curl -s -o $composeTemplate https://raw.githubusercontent.com/hardy-liu/ops/master/docker/docker-compose/docker-compose-production.yml.template
-	sed -i "s/{mysqlImage}/${mysqlImage}/g" $composeTemplate
-	sed -i "s/{phpImage}/${phpImage}/g" $composeTemplate
-	sed -i "s/{nginxImage}/${nginxImage}/g" $composeTemplate
-	sed -i "s/{redisImage}/${redisImage}/g" $composeTemplate
+	sed -i "s/{mysqlImage}/${dockerRegistry}\/${mysqlImage}/g" $composeTemplate
+	sed -i "s/{phpImage}/${dockerRegistry}\/${phpImage}/g" $composeTemplate
+	sed -i "s/{nginxImage}/${dockerRegistry}\/${nginxImage}/g" $composeTemplate
+	sed -i "s/{redisImage}/${dockerRegistry}\/${redisImage}/g" $composeTemplate
 	sed -i "s/{hypervisorIp}/${hypervisorIp}/g" $composeTemplate
 	sed -i "s/{dockerMysqlUid}/${dockerMysqlUid}/g" $composeTemplate
 	sed -i "s/{dockerRedisUid}/${dockerRedisUid}/g" $composeTemplate
