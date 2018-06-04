@@ -82,11 +82,7 @@ function fetch_docker_image() {
 	&& docker pull ${dockerRegistry}/${mysqlImage} \
 	&& docker pull ${dockerRegistry}/${phpImage} \
 	&& docker pull ${dockerRegistry}/${nginxImage} \
-	&& docker pull ${dockerRegistry}/${redisImage} \
-	&& docker tag ${dockerRegistry}/${mysqlImage} $mysqlImage \
-	&& docker tag ${dockerRegistry}/${phpImage} $phpImage \
-	&& docker tag ${dockerRegistry}/${nginxImage} $nginxImage \
-	&& docker tag ${dockerRegistry}/${redisImage} $redisImage
+	&& docker pull ${dockerRegistry}/${redisImage} 
 }
 
 #通过docker-compose模版生成可执行yaml文件
