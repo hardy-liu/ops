@@ -52,6 +52,12 @@ net.ipv4.ip_local_port_range = 1024  65500
 
 #系统所有进程总共可以打开的文件数量
 fs.file-max = 1000000
+
+#redis
+#每一个端口最大的监听队列的长度
+net.core.somaxconn = 65535
+#允许内存的overcommit
+vm.overcommit_memory = 1
 EOF
 	sysctl -p $kernelConf
 }

@@ -28,6 +28,8 @@ services:
     environment:
       - TZ=Asia/Hong_Kong
       - LANG=en_US.UTF-8
+    sysctls:
+      - net.core.somaxconn=65535
     extra_hosts:
       - "hypervisor:192.168.1.180"
     networks:
