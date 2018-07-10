@@ -17,8 +17,8 @@ function set_ulimit {
 * soft nofile 1000000
 * hard nofile 1000000
 #设置每个用户可以打开的进程数
-* soft nproc 10000
-* hard nproc 20000
+* soft nproc 64000
+* hard nproc 64000
 EOF
 }
 
