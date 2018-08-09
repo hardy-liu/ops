@@ -16,3 +16,8 @@ RUN apt-get update && apt-get install -y locales \
     && sed -i 's/^# *\(en_US.UTF-8\)/\1/' /etc/locale.gen \
     && sed -i 's/^# *\(zh_CN.UTF-8\)/\1/' /etc/locale.gen \
     && locale-gen
+
+#更改nginx用户uid和gid, 同时更新目录权限(和php-fpm:7.2.4一样)
+RUN usermod -u 10003 nginx \
+    && groupmod -g 10003 nginx \
+    && chown -R nginx:nginx /var/log/nginx

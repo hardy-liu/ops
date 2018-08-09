@@ -11,8 +11,8 @@ redisImage='myredis:4.0.9'
 dockerDataDir='/data/docker'
 hypervisorIp=''		#docker宿主机ip, 即本机ip(非lo)
 composeTemplate="${dockerDataDir}/docker-compose.yml"	#docker-compose
-dockerMysqlUid=''	#用户id
-dockerRedisUid=''
+#dockerMysqlUid=''	#用户id
+#dockerRedisUid=''
 dockerWwwUid=''
 
 #读取本机ip（手动输入）
@@ -88,15 +88,15 @@ function fetch_docker_image() {
 #通过docker-compose模版生成可执行yaml文件
 function generate_compose_yaml() {
 	#创建用户, 获取其id, 修改文件夹权限
-	useradd -s /sbin/nologin docker-www 
+	useradd -u 10003 -s /sbin/nologin docker-www 
 	chown -R docker-www:docker-www {/data/www,/data/docker/nginx,/data/docker/php}
 	dockerWwwUid=$(id -u docker-www)
-	useradd -s /sbin/nologin docker-mysql 
+	useradd -u 10001 -s /sbin/nologin docker-mysql 
 	chown -R docker-mysql:docker-mysql /data/docker/mysql
-	dockerMysqlUid=$(id -u docker-mysql)
-	useradd -s /sbin/nologin docker-redis 
+#	dockerMysqlUid=$(id -u docker-mysql)
+	useradd -u 10002 -s /sbin/nologin docker-redis 
 	chown -R docker-redis:docker-redis /data/docker/redis
-	dockerRedisUid=$(id -u docker-redis)
+#	dockerRedisUid=$(id -u docker-redis)
 
 	#下载配置文件模版
 	curl -s -o $composeTemplate https://raw.githubusercontent.com/hardy-liu/ops/master/docker/docker-compose/docker-compose-production.yml.template
@@ -105,8 +105,8 @@ function generate_compose_yaml() {
 	sed -i "s/{nginxImage}/${dockerRegistry}\/${nginxImage}/g" $composeTemplate
 	sed -i "s/{redisImage}/${dockerRegistry}\/${redisImage}/g" $composeTemplate
 	sed -i "s/{hypervisorIp}/${hypervisorIp}/g" $composeTemplate
-	sed -i "s/{dockerMysqlUid}/${dockerMysqlUid}/g" $composeTemplate
-	sed -i "s/{dockerRedisUid}/${dockerRedisUid}/g" $composeTemplate
+#	sed -i "s/{dockerMysqlUid}/${dockerMysqlUid}/g" $composeTemplate
+#	sed -i "s/{dockerRedisUid}/${dockerRedisUid}/g" $composeTemplate
 	sed -i "s/{dockerWwwUid}/${dockerWwwUid}/g" $composeTemplate
 }
 
@@ -122,7 +122,9 @@ function add_hosts_resolve() {
 function strart_app() {
 	#docker swarm init --advertise-addr=$hypervisorIp \
 	#&& docker stack deploy -c $composeTemplate web
-    docker-compose -f $composeTemplate up -d
+    #todo 如果mysql数据库目录没有文件，那么需要先init初始化
+    #docker-compose -f $composeTemplate up -d
+    echo "make sure mysql data dir is not empty, or you have to init mysql first."
 }
 
 read_host_ip \

@@ -18,3 +18,8 @@ RUN echo "user=mysql" >> /etc/mysql/mysql.conf.d/mysqld.cnf \
     && echo "log_timestamps=SYSTEM" >> /etc/mysql/mysql.conf.d/mysqld.cnf \
     && sed -i "s/#log-error/log-error/" /etc/mysql/mysql.conf.d/mysqld.cnf
 
+#更改mysql用户uid和gid, 同时更新目录权限
+RUN usermod -u 10001 mysql \
+    && groupmod -g 10001 mysql \
+    && chown -R mysql:mysql /var/log/mysql \
+    && chown -R mysql:mysql /var/lib/mysql
