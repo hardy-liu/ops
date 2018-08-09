@@ -50,6 +50,9 @@ RUN mkdir -p /data/php/log \
 #安装composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+#安装git，不然composer install某些包装不上
+RUN apt-get update && apt-get install -y git
+
 #修改locale支持中文显示和编辑
 RUN apt-get update && apt-get install -y locales \
     && rm -r /var/lib/apt/lists/* \
