@@ -83,5 +83,69 @@ services:
         aliases:
           - "my-docker-nginx"
     command: /bin/bash -c "envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
+
+#  'mongo-express':
+#    image: "hardyliu/mymongo-express"
+#    restart: "always"
+#    ports:
+#      - "8081:8081"
+#    depends_on:
+#      - mongodb
+#    environment:
+#      - TZ=Asia/Hong_Kong
+#      - LANG=en_US.UTF-8
+#      - ME_CONFIG_MONGODB_SERVER=my-docker-mongodb
+#      - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
+#      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+#      - ME_CONFIG_MONGODB_ADMINPASSWORD=mongopassword
+#    networks:
+#      webnet:
+#        ipv4_address: 172.28.1.101
+#        aliases:
+#          - "my-docker-mongo-express"
+#  parity:
+#    image: "parity/parity:stable"
+#    restart: "no"
+#    volumes:
+#      - "/data/docker/parity:/data/docker/parity"
+#    ports:
+#      - "8545:8545"
+#      - "8546:8546"
+#    command:
+##      - "--config"
+##      - "/data/docker/parity/etc/config.toml"
+##      - "--chain=/data/docker/parity/etc/dev-chain.json"
+#      - "--chain=dev"
+#      - "--gas-floor-target=20000000"
+#      - "--base-path=/data/docker/parity/data"
+#      - "--jsonrpc-interface=all"
+#      - "--jsonrpc-apis=all"
+#      - "--jsonrpc-hosts=all"
+#      - "--jsonrpc-cors=all"
+#      - "--ws-interface=all"
+#      - "--ws-apis=all"
+#      - "--ws-hosts=all"
+#      - "--ws-origins=all"
+#      - "--tracing=on"
+#      - "--fat-db=on"
+#      - "--pruning=archive"
+#    networks:
+#      webnet:
+#        ipv4_address: 172.28.1.1
+#        aliases:
+#          - "my-docker-parity"
+
+#  'etherchain-light':
+#    image: "hardyliu/mynode:8.11.3"
+#    restart: "no"
+#    volumes:
+#      - "/data/www/ethereum_project/etherchain-light:/data/www/ethereum_project/etherchain-light"
+#    ports:
+#      - 3000:3000
+#    depends_on:
+#      - parity 
+#    environment:
+#      - TZ=Asia/Hong_Kong
+#      - LANG=en_US.UTF-8
 networks:
   webnet:
