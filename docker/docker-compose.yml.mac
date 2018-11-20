@@ -1,0 +1,149 @@
+version: "3"
+services:
+  openvpn:
+    image: kylemanna/openvpn:2.4
+    volumes:
+      - ./docker-mac-network:/local
+      - ./docker-mac-network/config:/etc/openvpn
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    environment:
+      DEBUG: 1
+    command: /local/helpers/run.sh
+    restart: always
+
+  openvpn-proxy:
+    image: alpine/socat:1.0.2
+    ports:
+      - 13194:13194
+    command: TCP-LISTEN:13194,fork TCP:172.17.0.1:1194
+    restart: always
+    depends_on:
+      - openvpn
+
+  mysql:
+    image: "hardyliu/mymysql:5.7.22"
+    restart: always
+    volumes:
+      - "/data/docker/mysql/log:/var/log/mysql"
+      - "/data/docker/mysql/data:/var/lib/mysql"
+      - "/data/backup/mysql:/data/backup/mysql"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
+#    extra_hosts:
+#      - "hypervisor:172.31.32.109"
+    networks:
+      webnet:
+        ipv4_address: 172.28.0.11
+        aliases:
+          - "my-docker-mysql"
+
+  redis:
+    image: "hardyliu/myredis:4.0.9"
+    restart: always
+    volumes:
+      - "/data/docker/redis/data:/data"
+    ports:
+      - "6379:6379"
+    environment:
+      - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
+#    sysctls:
+#      - net.core.somaxconn=65535
+#    extra_hosts:
+#      - "hypervisor:172.31.32.109"
+    networks:
+      webnet:
+        ipv4_address: 172.28.0.12
+        aliases:
+          - "my-docker-redis"
+
+  php:
+    image: "hardyliu/myphp-fpm-dev:7.2.4"
+    restart: always
+    volumes:
+      - "/data/www:/data/www"
+      - "/data/docker/php:/data/php"
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+      - redis
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
+      - "XDEBUG_CONFIG=remote_host=192.168.1.194 remote_port=5001"
+#    extra_hosts:
+#      - "hypervisor:172.31.32.109"
+    networks:
+      webnet:
+        ipv4_address: 172.28.0.13
+        aliases:
+          - "my-docker-php-fpm"
+
+  nginx:
+    image: "hardyliu/mynginx:1.12.2"
+    restart: always
+    volumes:
+      - "/data/docker/nginx/log:/var/log/nginx"
+      - "/data/docker/nginx/conf/conf.d:/etc/nginx/conf.d"
+      - "/data/docker/nginx/conf/extra:/etc/nginx/extra"
+      - "/data/docker/nginx/ssl:/etc/nginx/ssl"
+      - "/data/www:/data/www"
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - php
+    environment:
+      - DOLLAR=$$
+      - FASTCGI_HOST=my-docker-php-fpm
+      - FASTCGI_PORT=9000
+      - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
+#    extra_hosts:
+#      - "hypervisor:172.31.32.109"
+    networks:
+      webnet:
+        ipv4_address: 172.28.0.14
+        aliases:
+          - "my-docker-nginx"
+    command: /bin/bash -c "envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
+
+  mongodb:
+    image: "hardyliu/mymongodb:4.0.0"
+    restart: "always"
+    volumes:
+      - "/data/docker/mongodb/data/db:/data/db"
+      - "/data/docker/mongodb/data/configdb:/data/configdb"
+      - "/data/docker/mongodb/log:/var/log/mongodb"
+    ports:
+      - "27017:27017"
+    environment:
+      - TZ=Asia/Hong_Kong
+      - LANG=en_US.UTF-8
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=mongopassword
+    networks:
+      webnet:
+        ipv4_address: 172.28.1.100
+        aliases:
+          - "my-docker-mongodb"
+    command: 
+      - '--auth'
+      - '--logpath'
+      - '/var/log/mongodb/mongod.log'
+      - '--logappend'
+
+networks:
+  webnet:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
