@@ -123,6 +123,7 @@ function strart_app() {
 	#docker swarm init --advertise-addr=$hypervisorIp \
 	#&& docker stack deploy -c $composeTemplate web
     #todo 如果mysql数据库目录没有文件，那么需要先init初始化
+    #"docker-compose run mysql /bin/bash; mysqld --initialize"
     #docker-compose -f $composeTemplate up -d
     echo "make sure mysql data dir is not empty, or you have to init mysql first."
 }
