@@ -25,8 +25,8 @@ services:
     restart: always
     volumes:
       - "/data/docker/redis/data:/data"
-    ports:
-      - "6379:6379"
+#    ports:
+#      - "6379:6379"
     environment:
       - TZ=Asia/Hong_Kong
       - LANG=en_US.UTF-8
