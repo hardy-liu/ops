@@ -37,9 +37,11 @@ long_query_time = 5
 #设置innodb每表独立的表空间
 innodb_file_per_table = 1
 #innodb可以使用的数据和索引cashe的总大小，默认128M，对于innodb来说，调大此参数可以极大提高性能
-#innodb_buffer_pool_size = 508084KB
-#innodb buffer pool会分割成多少个instance存储，提高并发性
-#innodb_buffer_pool_instances = 4
+#innodb_buffer_pool_size = 1GB
+#innodb buffer pool_size = innodb_buffer_pool_chunk_size * innodb_buffer_pool_instances
+#innodb_buffer_pool_chunk_size = 64MB
+#innodb buffer pool会分割成多少个instance存储，提高并发性，必须pool_size大于等于1G才生效
+#innodb_buffer_pool_instances = 16
 
 #myisam索引的缓存大小
 #key_buffer_size = 256M
