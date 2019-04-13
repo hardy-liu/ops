@@ -4,6 +4,7 @@ services:
     image: "{mysqlImage}"
     restart: always
     volumes:
+      - "/data/docker/mysql/custom.conf.d:/etc/mysql/custom.conf.d"
       - "/data/docker/mysql/log:/var/log/mysql"
       - "/data/docker/mysql/data:/var/lib/mysql"
       - "/data/backup/mysql:/data/backup/mysql"

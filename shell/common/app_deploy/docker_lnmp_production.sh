@@ -59,11 +59,15 @@ function do_preparation() {
 		echo '![ERROR] docker数据映射目录已存在，退出...' >> /dev/stderr &&  exit 1 
 	else 
 		mkdir -p ${dockerDataDir}/{mysql,nginx,php,redis} \
-		&& mkdir -p ${dockerDataDir}/mysql/{data,log} \
+		&& mkdir -p ${dockerDataDir}/mysql/{custom.conf.d,data,log} \
 		&& mkdir -p ${dockerDataDir}/nginx/{conf,log,ssl} \
 		&& mkdir -p ${dockerDataDir}/nginx/conf/{conf.d,extra} \
 		&& mkdir -p ${dockerDataDir}/php/{log,session} \
-		&& mkdir -p ${dockerDataDir}/redis/data \
+		&& mkdir -p ${dockerDataDir}/redis/data
+
+        #添加mysql配置文件
+        curl -s -o ${dockerDataDir}/mysql/custom.conf.d/custom.cnf https://raw.githubusercontent.com/hardy-liu/ops/master/docker/mysql/custom.conf.d/custom.cnf
+
 		#添加php-fpm模版文件
 		cat > ${dockerDataDir}/nginx/conf/extra/php-fpm.template << EOF
 try_files       \${DOLLAR}uri =404;
