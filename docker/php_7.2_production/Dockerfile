@@ -15,7 +15,7 @@ RUN apt-get update -y && apt-get install -y \
         libgmp-dev \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install -j$(nproc) xmlrpc pdo_mysql mysqli bcmath soap zip gmp sockets
+    && docker-php-ext-install -j$(nproc) xmlrpc pdo_mysql mysqli bcmath soap zip gmp sockets pcntl
     #pdo and iconv already included in the base image
 
 #安装pecl-redis扩展
