@@ -24,6 +24,8 @@ RUN curl 'http://pecl.php.net/get/redis-4.0.1.tgz' -o redis-4.0.1.tgz  \
     && pecl install redis-4.0.1.tgz \
     && docker-php-ext-enable redis \
     && rm -f redis-4.0.1.tgz
+#安装pecl-mongodb扩展
+RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 #更改php配置
 RUN mkdir -p /data/php/log \
