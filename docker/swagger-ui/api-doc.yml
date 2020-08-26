@@ -1,0 +1,273 @@
+openapi: 3.0.0
+info:
+  description: "测试接口"
+  version: "1.0.0"
+  title: "欢歌接口文档"
+servers:
+  - description: "台湾测试环境接口地址"
+    url: "http://test.17sing.tw"
+  - description: "越南测试环境接口地址"
+    url: "http://test.singnowapp.com"
+
+paths:
+  /action/index.php?action=test.getToken:
+    get:
+      summary: "获取token"
+      tags:
+        - 调试
+      description: "获取token"
+      responses:
+        '200':
+          description: "ok"
+      parameters:
+        - name: uid 
+          in: query
+          description: "uid"
+          required: true
+          schema:
+            type: integer
+  /action/index.php?action=test.sendEvent:
+    post:
+      summary: "发送事件"
+      tags:
+        - 调试
+      description: "模拟发送kafka事件(测试环境订阅redis channel)"
+      responses:
+        '200':
+          description: "ok"
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schema:
+              type: object
+#              properties:
+#                event:
+#                  type: string
+#                  description: 事件名
+#                event_body:
+#                  type: string
+#                  description: 事件内容（rid=12&uid=12）
+#              required:
+#                - event
+#                - event_body
+            example:
+              event: sendKTVGift
+              uid: 6321877
+              qty: 1
+
+  /action/index.php?action=GetMyselfInfo:
+    post:
+      summary: "个人信息"
+      tags:
+        - 用户
+      description: "个人信息"
+      responses:
+        '200':
+          description: "ok"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/UidToken'
+
+  /action/index.php?action=MusicSearch:
+    get:
+      summary: "伴奏搜索"
+      tags:
+        - 伴奏
+      description: "伴奏搜索"
+      responses:
+        '200':
+          description: "ok"
+      parameters:
+        - name: uid 
+          in: query
+          description: "uid"
+          required: true
+          schema:
+            type: integer
+        - name: token
+          in: query
+          description: "token"
+          required: true
+          schema:
+            type: string
+        - name: start
+          in: query
+          description: "start"
+          required: true
+          schema:
+            type: integer
+        - name: length
+          in: query
+          description: "length"
+          required: true
+          schema:
+            type: integer
+        - name: query
+          in: query
+          description: "关键字"
+          required: true
+          schema:
+            type: string
+  /action/index.php?action=HotMusic:
+    post:
+      summary: "热门歌曲"
+      tags:
+        - 伴奏
+      description: "热门歌曲"
+      responses:
+        '200':
+          description: "ok"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/UidToken'
+              properties:
+                start:
+                  type: integer
+                length:
+                  type: integer
+              required:
+                - start
+                - length
+  /action/index.php?action=GetChorusRecommend:
+    post:
+      summary: "合唱推荐"
+      tags:
+        - 伴奏
+      description: "合唱推荐"
+      responses:
+        '200':
+          description: "ok"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/UidToken'
+              properties:
+                qty:
+                  type: integer
+                start:
+                  type: integer
+  /action/index.php?action=song.reqMusic:
+    post:
+      summary: "实时点唱"
+      tags:
+        - 伴奏
+      description: "实时点唱"
+      responses:
+        '200':
+          description: "ok"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/UidToken'
+              properties:
+                start:
+                  type: integer
+                pageSize:
+                  type: integer
+  /action/index.php?action=NewAccompany:
+    post:         
+      summary: "新歌速递"
+      tags:       
+        - 伴奏
+      description: "新歌速递"
+      responses:
+        '200':
+          description: "ok"
+      requestBody: 
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/UidToken'
+              properties:
+                start:
+                  type: integer
+                length:
+                  type: integer
+
+  /action/index.php?action=roomDraw.createFixedDraw:
+    post:
+      summary: "创建固定抽奖"
+      tags:
+        - 抽奖组件
+      description: "创建固定抽奖"
+      responses:
+        '200':
+          description: "ok"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/UidToken'
+              type: object
+              properties:
+                rid:
+                  type: integer
+                  description: 房间id
+                fix_draw_prise_id:
+                  type: integer
+                  description: 固定抽奖配置id
+                participator_limit:
+                  type: integer
+                  description: 参与者限制
+                  enum: [1,2]
+                  default: 1
+              required:
+                - uid
+                - token
+                - rid
+                - fix_draw_prise_id
+                - participator_limit
+
+components:
+  schemas:
+    UidToken:
+      type: object
+      properties:
+        uid:
+          type: integer
+        token:
+          type: string
+      required:
+        - uid
+        - token
+    ApiResponse:
+      type: object
+      properties:
+        response_status:
+          type: object
+          properties:
+            error:
+              type: string
+        response_data:
+          type: object
+  parameters:
+    extraHeader:
+      in: header
+      name: Host
+      schema:
+        type: string
+        default: "test.17sing.tw"
