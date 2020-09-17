@@ -275,8 +275,42 @@ paths:
         '200':
           description: "ok"
       parameters:
+        - $ref: '#/components/parameters/uid' 
+        - $ref: '#/components/parameters/token' 
+
+  /action/index.php?action=GetNewGiftList:
+    get:
+      summary: "礼物列表"
+      tags:
+        - 礼物
+      description: "礼物列表"
+      responses:
+        '200':
+          description: "ok"
+      parameters:
         - $ref: '#/components/parameters/uid'
         - $ref: '#/components/parameters/token'
+        - name: gtype
+          in: query
+          description: "礼物类型（1-ktv，2-语聊，3-spy）"
+          required: true
+          schema:
+            type: integer
+            enum: [1,2,3]
+            default: 0
+        - name: dstflat 
+          in: query
+          description: "是否支持折扣礼物的版本"
+          required: true
+          schema:
+            type: integer
+            default: 1
+        - name: proper
+          in: query
+          description: "ktv礼物 redis后面的key的后缀（语聊房没有此字段）"
+          required: false
+          schema:
+            type: string
 
 components:
   schemas:
