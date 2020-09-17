@@ -8,6 +8,8 @@ servers:
     url: "http://test.17sing.tw"
   - description: "越南测试环境接口地址"
     url: "http://test.singnowapp.com"
+  - description: "印尼测试环境接口地址"
+    url: "http://test.wekarapp.com"
 
 paths:
   /action/index.php?action=test.getToken:
@@ -20,12 +22,7 @@ paths:
         '200':
           description: "ok"
       parameters:
-        - name: uid 
-          in: query
-          description: "uid"
-          required: true
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/uid'
   /action/index.php?action=test.sendEvent:
     post:
       summary: "发送事件"
@@ -58,6 +55,24 @@ paths:
 
   /action/index.php?action=GetMyselfInfo:
     post:
+      summary: "我的个人信息"
+      tags:
+        - 用户
+      description: "我的个人信息"
+      responses:
+        '200':
+          description: "ok"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              allOf:
+                - $ref: '#/components/schemas/UidToken'
+
+  /action/index.php?action=GetUserInfo:
+    post:
       summary: "个人信息"
       tags:
         - 用户
@@ -73,6 +88,11 @@ paths:
               type: object
               allOf:
                 - $ref: '#/components/schemas/UidToken'
+              properties:
+                selfUid:
+                  type: integer
+              required:
+                - selfUid 
 
   /action/index.php?action=MusicSearch:
     get:
@@ -84,18 +104,8 @@ paths:
         '200':
           description: "ok"
       parameters:
-        - name: uid 
-          in: query
-          description: "uid"
-          required: true
-          schema:
-            type: integer
-        - name: token
-          in: query
-          description: "token"
-          required: true
-          schema:
-            type: string
+        - $ref: '#/components/parameters/uid'
+        - $ref: '#/components/parameters/token'
         - name: start
           in: query
           description: "start"
@@ -242,6 +252,32 @@ paths:
                 - fix_draw_prise_id
                 - participator_limit
 
+  /action/index.php?action=car.GetStoreCars:
+    get:
+      summary: "座驾列表"
+      tags:
+        - 座驾
+      description: "座驾列表"
+      responses:
+        '200':
+          description: "ok"
+      parameters:
+        - $ref: '#/components/parameters/uid' 
+        - $ref: '#/components/parameters/token' 
+
+  /action/index.php?action=car.GetActiveCars:
+    get:
+      summary: "获取当前有效座驾"
+      tags:
+        - 座驾
+      description: "获取当前有效座驾"
+      responses:
+        '200':
+          description: "ok"
+      parameters:
+        - $ref: '#/components/parameters/uid'
+        - $ref: '#/components/parameters/token'
+
 components:
   schemas:
     UidToken:
@@ -265,6 +301,20 @@ components:
         response_data:
           type: object
   parameters:
+    uid:
+      in: query
+      name: uid 
+      required: true
+      schema:
+        type: integer 
+      description: "uid"
+    token:
+      in: query
+      name: token
+      required: true
+      schema:
+        type: string 
+      description: "token"
     extraHeader:
       in: header
       name: Host
