@@ -14,6 +14,9 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
       - TZ=Asia/Hong_Kong
       - LANG=en_US.UTF-8
+    user: '10001:10001'
+    command:
+      - --default-authentication-plugin=mysql_native_password
     extra_hosts:
       - "hypervisor:{hypervisorIp}"
     networks:

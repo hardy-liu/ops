@@ -10,7 +10,7 @@ skip-name-resolve = ON
 log-bin = mysql-bin
 #开启二进制日志，不指定server-id会报错
 server-id = 1
-expire_logs_days = 15
+binlog_expire_logs_seconds = 2592000
 
 #设置默认的字符集为utf8，新建数据库继承此属性
 character_set_server = utf8mb4
@@ -20,19 +20,13 @@ collation-server=utf8mb4_unicode_ci
 max_connections = 1024
 #默认值1M，控制通信缓冲区的最大长度，SQL语句过大或者语句中含有BLOB或者longblob字段时，默认的缓冲可能不够
 max_allowed_packet = 20M
-#是否启用查询缓存
-query_cache_type = ON
-#不缓存大于此大小的结果，默认1M
-query_cache_limit = 50M
-#定义查询缓存所使用的内存大小
-query_cache_size = 512M
 
 #启用慢日志
 slow_query_log = ON
 #定义慢日志的存放路径
 slow-query-log-file = /var/log/mysql/slow.log
 #定义大于多少秒的查询纪录慢日志
-long_query_time = 5
+long_query_time = 1
 
 #设置innodb每表独立的表空间
 innodb_file_per_table = 1
