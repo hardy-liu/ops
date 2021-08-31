@@ -11,7 +11,8 @@ curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compo
 chmod +x /usr/local/bin/docker-compose
 
 #download image
-localIp=$(ip addr | grep ens | grep inet | awk '{print $2}' | awk -F'/' '{print $1}')
+#localIp=$(ip addr | grep ens | grep inet | awk '{print $2}' | awk -F'/' '{print $1}')
+read -p "localIp: " localIp 
 if [[ -z "$localIp" ]]; then
     echo "WARN: localIp empty"
     exit 1
