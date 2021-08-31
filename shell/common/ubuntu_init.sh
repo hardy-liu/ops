@@ -71,4 +71,5 @@ EOF
 sysctl -p $kernelConf
 
 #安装软件包
+apt-get update
 apt-get install -y lrzsz mysql-client redis-tools net-tools jq

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #install docker engine
+mkdir -p /data/www/shell
 cd /data/www/shell
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh ./get-docker.sh
