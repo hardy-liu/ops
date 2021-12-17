@@ -13,6 +13,8 @@ RUN apt-get update -y && apt-get install -y \
         libxml2-dev \
         libzip-dev \
         libgmp-dev \
+        libmagickwand-dev \
+        imagemagick \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install -j$(nproc) xmlrpc pdo_mysql mysqli bcmath soap zip gmp sockets pcntl
@@ -24,6 +26,8 @@ RUN pecl install redis && docker-php-ext-enable redis
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 #安装swoole
 RUN pecl install swoole && docker-php-ext-enable swoole 
+#安装imagick
+RUN pecl install imagick && docker-php-ext-enable imagick
 
 #更改php配置
 RUN mkdir -p /data/php/log \
