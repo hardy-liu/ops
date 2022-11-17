@@ -1,6 +1,6 @@
 FROM redis:5.0.8
 
-RUN apt-get update && apt-get install -y procps vim-tiny
+RUN apt-get update && apt-get install -y procps vim-tiny iputils-ping
 
 #修改locale支持中文显示和编辑
 RUN apt-get update && apt-get install -y locales \

@@ -1,6 +1,6 @@
 FROM mysql:8.0.19
 
-RUN apt-get update && apt-get install -y procps vim-tiny
+RUN apt-get update && apt-get install -y procps vim-tiny iputils-ping
 
 #自定义配置，使用volumes映射加载额外配置
 #ADD ./custom.conf.d /etc/mysql/custom.conf.d

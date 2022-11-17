@@ -1,7 +1,7 @@
 FROM nginx:1.16.1
 
 #安装工具
-RUN apt-get update && apt-get install -y procps vim-tiny
+RUN apt-get update && apt-get install -y procps vim-tiny iputils-ping
 
 # 添加自定义的配置文件
 RUN mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.default \
