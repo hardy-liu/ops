@@ -1,0 +1,106 @@
+version: "3"
+services:
+  mysql:
+    platform: linux/amd64
+    image: "hardyliu/mymysql-multi-arch:8.0.31"
+    restart: always
+    volumes:
+      - "/data/docker/mysql/custom.conf.d:/etc/mysql/conf.d"
+      - "/data/docker/mysql/log:/var/log/mysql"
+      - "/data/docker/mysql/data:/var/lib/mysql"
+      - "/data/backup/mysql:/data/backup/mysql"
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - TZ=UTC
+      - LANG=en_US.UTF-8
+    user: '10001:10001'
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --disable-log-bin
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      webnet:
+        ipv4_address: 172.28.0.11
+        aliases:
+          - "my-docker-mysql"
+  redis:
+    platform: linux/amd64
+    image: "hardyliu/myredis-multi-arch:5.0.8"
+    restart: always
+    volumes:
+      - "/data/docker/redis/data:/data"
+    ports:
+      - "127.0.0.1:6379:6379"
+    environment:
+      - TZ=UTC
+      - LANG=en_US.UTF-8
+    sysctls:
+      - net.core.somaxconn=65535
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      webnet:
+        ipv4_address: 172.28.0.12
+        aliases:
+          - "my-docker-redis"
+  php:
+    image: "hardyliu/myphp-fpm:7.4.4"
+    restart: always
+    volumes:
+      - "/data/www:/data/www"
+      - "/data/docker/php:/data/php"
+    ports:
+      - "127.0.0.1:9000:9000"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - TZ=UTC
+      - LANG=en_US.UTF-8
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    cap_add:
+      - SYS_PTRACE
+    networks:
+      webnet:
+        ipv4_address: 172.28.0.13
+        aliases:
+          - "my-docker-php-fpm"
+  nginx:
+    platform: linux/amd64
+    image: "hardyliu/mynginx-multi-arch:1.16.1"
+    restart: always
+    volumes:
+      - "/data/docker/nginx/log:/var/log/nginx"
+      - "/data/docker/nginx/conf/conf.d:/etc/nginx/conf.d"
+      - "/data/docker/nginx/conf/extra:/etc/nginx/extra"
+      - "/data/docker/nginx/ssl:/etc/nginx/ssl"
+      - "/data/www:/data/www"
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - php
+    environment:
+      - DOLLAR=$$
+      - FASTCGI_HOST=my-docker-php-fpm
+      - FASTCGI_PORT=9000
+      - TZ=UTC
+      - LANG=en_US.UTF-8
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: /bin/bash -c "usermod -u 10003 nginx && groupmod -g 10003 nginx && envsubst < /etc/nginx/extra/php-fpm.template > /etc/nginx/customized/php-fpm.conf && nginx -g 'daemon off;'"
+    networks:
+      webnet:
+        ipv4_address: 172.28.0.14
+        aliases:
+          - "my-docker-nginx"
+
+networks:
+  webnet:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
